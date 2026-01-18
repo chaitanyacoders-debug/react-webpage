@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext, useContext, useRef } from 'react';
 import { HashRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Menu, X, BookOpen, Users, Briefcase, ChevronRight, 
@@ -99,6 +99,17 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
+// Helper component to scroll to top on route change
+const ScrollToTop = () => {
+  const { pathname, hash } = useLocation();
+  useEffect(() => {
+    if (!hash) {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, hash]);
+  return null;
+};
+
 const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [courses, setCourses] = useState<Course[]>(INITIAL_COURSES);
   const [blogs, setBlogs] = useState<BlogPost[]>(INITIAL_BLOGS);
@@ -165,7 +176,7 @@ const CurriculumModal = ({ course, onClose }: { course: Course; onClose: () => v
               <p className="text-slate-500 text-lg max-w-xl mx-auto mb-12 font-medium leading-relaxed">
                 This specialized {course.category} module is currently available via personalized consultation only. Connect with our academic advisors to receive the full track breakdown.
               </p>
-              <Button variant="secondary" size="lg" className="rounded-2xl px-12" onClick={() => { onClose(); navigate('/contact'); }}>
+              <Button variant="secondary" size="lg" className="rounded-2xl px-12" onClick={() => { onClose(); navigate('/contact#enquiry-form'); }}>
                 KNOW MORE - CONTACT US <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </div>
@@ -199,7 +210,7 @@ const CurriculumModal = ({ course, onClose }: { course: Course; onClose: () => v
                   Our curriculum is updated weekly to reflect real-world deployments. Start your journey towards technical mastery today.
                 </p>
                 <div className="flex items-center justify-center relative z-10">
-                  <Button variant="primary" size="lg" className="rounded-2xl px-12 w-full sm:w-auto" onClick={() => { onClose(); navigate('/contact'); }}>
+                  <Button variant="primary" size="lg" className="rounded-2xl px-12 w-full sm:w-auto" onClick={() => { onClose(); navigate('/contact#enquiry-form'); }}>
                     KNOW MORE - CONTACT US
                   </Button>
                 </div>
@@ -290,7 +301,7 @@ const CTASection = () => {
               variant="primary" 
               size="lg" 
               className="rounded-3xl px-12 md:px-24 py-6 md:py-8 text-lg md:text-2xl shadow-2xl shadow-[#76BC21]/30 transition-all hover:scale-105"
-              onClick={() => navigate('/contact')}
+              onClick={() => navigate('/contact#enquiry-form')}
             >
               ENROLL IN A PROGRAM
             </Button>
@@ -326,8 +337,9 @@ const BetterWayToLearn = ({ lightBg = true }: { lightBg?: boolean }) => (
   </section>
 );
 
-const CourseCard = ({ course, trending = false }: { course: Course, trending?: boolean }) => {
+const CourseCard: React.FC<{ course: Course, trending?: boolean }> = ({ course, trending = false }) => {
   const { openCurriculum } = useContext(AppContext)!;
+  const navigate = useNavigate();
   return (
     <div className="group bg-white rounded-[40px] overflow-hidden border border-slate-100 shadow-xl transition-all duration-500 hover:-translate-y-3 flex flex-col h-full relative">
       {trending && (
@@ -366,11 +378,14 @@ const CourseCard = ({ course, trending = false }: { course: Course, trending?: b
           >
             View Curriculum
           </Button>
-          <Link to="/contact" className="w-full">
-            <Button variant="secondary" size="md" className="w-full py-4 bg-[#00A3E0] hover:bg-[#0089bd] text-white uppercase tracking-[0.1em] text-[11px] font-black shadow-lg rounded-2xl">
-              Register Now
-            </Button>
-          </Link>
+          <Button 
+            variant="secondary" 
+            size="md" 
+            className="w-full py-4 bg-[#00A3E0] hover:bg-[#0089bd] text-white uppercase tracking-[0.1em] text-[11px] font-black shadow-lg rounded-2xl"
+            onClick={() => navigate('/contact#enquiry-form')}
+          >
+            Register Now
+          </Button>
         </div>
       </div>
     </div>
@@ -946,35 +961,46 @@ const Blog = () => {
 const Contact = () => {
   const WHATSAPP_LINK = "https://wa.me/917989155879";
   const GOOGLE_FORM_LINK = "https://forms.gle/5G1Zg8dDHmsfnSUf8";
+  const { hash } = useLocation();
+  const enquiryBoxRef = useRef<HTMLDivElement>(null);
+
+  // Manual smooth scroll effect for targeted hash
+  useEffect(() => {
+    if (hash === '#enquiry-form' && enquiryBoxRef.current) {
+      setTimeout(() => {
+        enquiryBoxRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    }
+  }, [hash]);
 
   return (
     <div className="pt-40 pb-32 bg-white">
       <div className="max-w-7xl mx-auto px-4">
         <SectionHeading title="Connect With Us" subtitle="Start your professional transformation today." />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 mt-20 text-center items-center">
-          <div className="space-y-10">
-            <div className="p-12 bg-slate-50 rounded-[48px] border border-slate-100 shadow-sm text-center">
-              <h4 className="font-black text-2xl mb-8 text-[#1E2D5A] uppercase tracking-wider border-b border-slate-200 pb-4">Admissions & Support</h4>
+          <div className="space-y-10 w-full overflow-hidden">
+            <div className="p-6 sm:p-12 bg-slate-50 rounded-[40px] sm:rounded-[48px] border border-slate-100 shadow-sm text-center">
+              <h4 className="font-black text-xl sm:text-2xl mb-8 text-[#1E2D5A] uppercase tracking-wider border-b border-slate-200 pb-4">Admissions & Support</h4>
               
               <div className="space-y-8 mb-12">
                 <div>
                   <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 uppercase">Contact Emails</h5>
-                  <div className="space-y-2">
-                    <p className="text-[#00A3E0] font-black text-xl hover:underline cursor-pointer">sales@cirametiacademy.in</p>
-                    <p className="text-[#00A3E0] font-black text-xl hover:underline cursor-pointer">contact@cirametiacademy.in</p>
+                  <div className="space-y-4">
+                    <p className="text-[#00A3E0] font-black text-base sm:text-xl hover:underline cursor-pointer break-all sm:break-normal leading-tight">sales@cirametiacademy.in</p>
+                    <p className="text-[#00A3E0] font-black text-base sm:text-xl hover:underline cursor-pointer break-all sm:break-normal leading-tight">contact@cirametiacademy.in</p>
                   </div>
                 </div>
 
                 <div>
                   <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 uppercase">Admin Hotlines</h5>
                   <div className="space-y-2">
-                    <p className="text-[#1E2D5A] font-black text-xl">+91 6304443883</p>
-                    <p className="text-[#1E2D5A] font-black text-xl">+91 7989155879</p>
+                    <p className="text-[#1E2D5A] font-black text-lg sm:text-xl">+91 6304443883</p>
+                    <p className="text-[#1E2D5A] font-black text-lg sm:text-xl">+91 7989155879</p>
                   </div>
                 </div>
               </div>
 
-              <div className="flex justify-center gap-12 pt-8 border-t border-slate-200">
+              <div className="flex justify-center gap-8 sm:gap-12 pt-8 border-t border-slate-200">
                  <a href="tel:+917989155879" className="flex flex-col items-center gap-2 group">
                     <div className="p-4 bg-white rounded-2xl shadow-sm border border-slate-100 text-[#76BC21] group-hover:bg-[#76BC21] group-hover:text-white transition-all">
                       <Phone className="w-6 h-6" />
@@ -991,14 +1017,18 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="bg-[#1E2D5A] p-12 md:p-20 rounded-[64px] shadow-3xl text-center">
-            <h3 className="text-4xl md:text-5xl font-black mb-8 text-white leading-tight uppercase tracking-tight uppercase">Send a Message</h3>
+          <div 
+            id="enquiry-form" 
+            ref={enquiryBoxRef}
+            className="bg-[#1E2D5A] p-10 md:p-20 rounded-[48px] sm:rounded-[64px] shadow-3xl text-center scroll-mt-32 transition-all duration-700 w-full"
+          >
+            <h3 className="text-3xl sm:text-4xl md:text-5xl font-black mb-8 text-white leading-tight uppercase tracking-tight">Send a Message</h3>
             <p className="text-white/60 text-lg mb-12 max-w-sm mx-auto font-medium">
               We've simplified our enquiry process. Please click below to provide your details via our secure application form.
             </p>
             <div className="flex flex-col gap-6">
               <a href={GOOGLE_FORM_LINK} target="_blank" rel="noreferrer" className="w-full">
-                <Button variant="primary" size="lg" className="w-full py-8 text-xl rounded-3xl font-black group shadow-2xl shadow-[#76BC21]/40 uppercase tracking-wider">
+                <Button variant="primary" size="lg" className="w-full py-6 sm:py-8 text-lg sm:text-xl rounded-2xl sm:rounded-3xl font-black group shadow-2xl shadow-[#76BC21]/40 uppercase tracking-wider">
                    CONTACT AND REGISTER <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
                 </Button>
               </a>
@@ -1072,6 +1102,7 @@ const Main = () => {
   return (
     <div className="flex flex-col min-h-screen bg-white custom-scrollbar overflow-x-hidden">
       {!isAdminView && <Navbar />}
+      <ScrollToTop />
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
