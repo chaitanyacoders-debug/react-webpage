@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { INITIAL_COURSES, INITIAL_BLOGS, NAVIGATION, COLORS } from './constants';
 import type { Course, BlogPost, Lead, User } from './types';
-import siteLogo from './for website.png';
+import siteLogo from './for-website.png';
 
 // Curriculum Data Structure
 const CURRICULA: Record<string, { duration: string; modules: { title: string; points: string[] }[] }> = {
