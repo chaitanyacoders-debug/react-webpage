@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { INITIAL_COURSES, INITIAL_BLOGS, NAVIGATION, COLORS } from './constants';
 import type { Course, BlogPost, Lead, User } from './types';
+import siteLogo from './for website.png';
 
 // Curriculum Data Structure
 const CURRICULA: Record<string, { duration: string; modules: { title: string; points: string[] }[] }> = {
@@ -223,21 +224,15 @@ const CurriculumModal = ({ course, onClose }: { course: Course; onClose: () => v
   );
 };
 
-const BrandLogo = ({ className = "h-10" }: { className?: string }) => (
-  <div className={`flex items-center gap-3 ${className}`}>
-    <div className="relative w-12 h-12 flex items-center justify-center">
-      <svg viewBox="0 0 100 100" className="w-full h-full">
-        <path d="M50 20 L15 42 L50 64 L85 42 Z" fill="#1E2D5A" />
-        <path d="M40 46 V52 Q40 58 50 58 Q60 58 60 52 V46" fill="none" stroke="#1E2D5A" strokeWidth="3" />
-        <path d="M35 55 Q20 55 20 75 Q20 95 50 95 Q80 95 80 75" fill="none" stroke="#76BC21" strokeWidth="10" strokeLinecap="round" />
-        <path d="M50 95 Q80 95 80 75" fill="none" stroke="#00A3E0" strokeWidth="10" strokeLinecap="round" />
-        <path d="M85 25 L87 31 L93 33 L87 35 L85 41 L83 35 L77 33 L83 31 Z" fill="#76BC21" />
-      </svg>
+const BrandLogo = ({ className = "" }: { className?: string }) => (
+  <div className={`flex items-center gap-3 h-16 ${className}`}>
+    <div className="relative w-26 h-16 flex items-center justify-center">
+      <img src={siteLogo} alt="Cirameti Academy" className="w-full h-full object-contain drop-shadow-md" />
     </div>
-    <div className="flex flex-col leading-[0.9]">
+    {/* <div className="flex flex-col leading-[0.9]">
       <span className="text-2xl font-extrabold tracking-tight text-[#1E2D5A]">Cirameti</span>
       <span className="text-[10px] font-bold tracking-[0.45em] text-[#76BC21] uppercase mt-1">Academy</span>
-    </div>
+    </div> */}
   </div>
 );
 
@@ -573,7 +568,7 @@ const Navbar = () => {
               <Link 
                 key={item.name} 
                 to={item.path} 
-                className={`text-xs font-bold uppercase tracking-widest transition-colors ${location.pathname === item.path ? 'text-[#76BC21]' : 'text-slate-500 hover:text-[#1E2D5A]'}`}
+                className={`text-m font-bold uppercase tracking-widest transition-colors ${location.pathname === item.path ? 'text-[#76BC21]' : 'text-slate-500 hover:text-[#1E2D5A]'}`}
               >
                 {item.name}
               </Link>
@@ -628,17 +623,27 @@ const Footer = () => {
               <a href="https://wa.me/917989155879" target="_blank" rel="noreferrer" className="p-3 bg-white shadow-sm border border-slate-100 rounded-xl hover:text-[#25D366] transition-all hover:-translate-y-1">
                 <MessageCircle className="w-5 h-5" />
               </a>
+              <a href="https://www.instagram.com/cirametiacademy?igsh=MXRkY2JvZm9rYnh4eg%3D%3D&utm_source=qr" target="_blank" rel="noreferrer" aria-label="Instagram" className="p-3 bg-white shadow-sm border border-slate-100 rounded-xl hover:text-[#C13584] transition-all hover:-translate-y-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                  <path d="M7 2C4.23858 2 2 4.23858 2 7V17C2 19.7614 4.23858 22 7 22H17C19.7614 22 22 19.7614 22 17V7C22 4.23858 19.7614 2 17 2H7ZM12 7.8C14.3211 7.8 16.2 9.67893 16.2 12C16.2 14.3211 14.3211 16.2 12 16.2C9.67893 16.2 7.8 14.3211 7.8 12C7.8 9.67893 9.67893 7.8 12 7.8ZM18.4 6.2C18.4 6.77614 17.9761 7.2 17.4 7.2C16.8239 7.2 16.4 6.77614 16.4 6.2C16.4 5.62386 16.8239 5.2 17.4 5.2C17.9761 5.2 18.4 5.62386 18.4 6.2Z" />
+                </svg>
+              </a>
+              <a href="https://youtube.com/@cirametiacademy?si=6uESgi48cT-IhEbI" target="_blank" rel="noreferrer" aria-label="YouTube" className="p-3 bg-white shadow-sm border border-slate-100 rounded-xl hover:text-[#FF0000] transition-all hover:-translate-y-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                  <path d="M23.498 6.186a3 3 0 0 0-2.112-2.12C19.88 3.5 12 3.5 12 3.5s-7.88 0-9.386.566a3 3 0 0 0-2.112 2.12A31.02 31.02 0 0 0 0 12a31.02 31.02 0 0 0 .502 5.814 3 3 0 0 0 2.112 2.12C4.12 20.5 12 20.5 12 20.5s7.88 0 9.386-.566a3 3 0 0 0 2.112-2.12A31.02 31.02 0 0 0 24 12a31.02 31.02 0 0 0-.502-5.814zM9.75 15.02V8.98L15.5 12l-5.75 3.02z" />
+                </svg>
+              </a>
             </div>
           </div>
           
-          <div className="md:text-right">
-            <h4 className="text-[#1E2D5A] font-black mb-8 uppercase tracking-widest text-xs">Platform</h4>
-            <ul className="space-y-4 text-slate-500 font-medium text-sm">
-              <li><Link to="/about" className="hover:text-[#76BC21] transition-colors">About Us</Link></li>
-              <li><Link to="/hire" className="hover:text-[#76BC21] transition-colors">Hire From Us</Link></li>
-              <li><Link to="/contact" className="hover:text-[#76BC21] transition-colors">Contact</Link></li>
-            </ul>
-          </div>
+            <div className="md:text-right">
+              <h4 className="text-[#1E2D5A] font-black mb-8 uppercase tracking-widest text-m">Platform</h4>
+              <ul className="space-y-4 text-slate-500 font-medium text-m">
+                <li><Link to="/about" className="hover:text-[#76BC21] transition-colors">About Us</Link></li>
+                <li><Link to="/hire" className="hover:text-[#76BC21] transition-colors">Hire From Us</Link></li>
+                <li><Link to="/contact" className="hover:text-[#76BC21] transition-colors">Contact</Link></li>
+              </ul>
+            </div>
         </div>
         
         <div className="border-t border-slate-200 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-slate-400 text-xs font-bold uppercase tracking-[0.2em]">
